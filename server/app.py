@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from os.path import exists
 from init_db import init_db
 import json, random
@@ -48,7 +48,8 @@ def home():
 @app.route('/q')  # this yields any random question
 @app.route('/q/<cat>')  # cat can be one of {"chin", "eng", "math"}
 def q(cat=None):
-    return jsonify(next(feed_random_questions(cat), {'error': 'no question available.'}))
+    prev_id = request.args.get("prev_id")
+    return jsonify(next(feed_random_questions(cat, prev_id if prev_id else None), {'error': 'no question available.'}))
 
 
 # TODO: Endpoints for Adding/Removing questions
