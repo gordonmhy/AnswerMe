@@ -13,3 +13,7 @@ web-build/
 # macOS
 .DS_Store
 .idea
+
+server/q&a.json
+server/__pycache__/
+
