@@ -14,6 +14,6 @@ web-build/
 .DS_Store
 .idea
 
-server/q&a.json
+server/static/data/q&a.json
 server/__pycache__/
 

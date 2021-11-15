@@ -1,16 +1,17 @@
+const PORT = 5000;
+const PROTOCOL = "http";
+
 document.addEventListener('DOMContentLoaded', () => {
     let allQuestionsFrame = document.querySelector("#allQuestionsFrame");
-    allQuestionsFrame.src = `http://${window.location.hostname}:5000/all`;
+    allQuestionsFrame.src = `${PROTOCOL}://${window.location.hostname}:${PORT}/all`;
     const updateFrame = () => {
         let cat = displayQuestionCategory.options[displayQuestionCategory.selectedIndex].value;
-        allQuestionsFrame.src = `http://${window.location.hostname}:5000/all${cat !== "all" ? "/" + cat : ""}`;
+        allQuestionsFrame.src = `${PROTOCOL}://${window.location.hostname}:${PORT}/all${cat !== "all" ? "/" + cat : ""}`;
     }
     let displayQuestionCategory = document.querySelector("#displayQuestionCategory");
     displayQuestionCategory.addEventListener("change", updateFrame);
     let refreshButton = document.querySelector("#refreshButton");
-    refreshButton.addEventListener("click", () => {
-        updateFrame();
-    })
+    refreshButton.addEventListener("click", updateFrame)
     let addQuestionFormSubmitButton = document.querySelector("#addQuestionFormSubmit");
     addQuestionFormSubmitButton.addEventListener("click", (event) => {
         event.preventDefault();
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (questionAnswer2.value !== '') {
             data.ans2 = questionAnswer2.value
         }
-        fetch(`http://${window.location.hostname}:5000/add`, {
+        fetch(`${PROTOCOL}://${window.location.hostname}:${PORT}/add`, {
             body: JSON.stringify(data),
             method: 'POST',
             headers: {
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         deleteQuestionFormStatus.innerHTML = "Loading, please wait...";
         deleteQuestionFormStatus.style.display = "block";
         deleteQuestionFormStatus.style.color = "gray";
-        fetch(`http://${window.location.hostname}:5000/del/${questionId.value}`, {
+        fetch(`${PROTOCOL}://${window.location.hostname}:${PORT}/del/${questionId.value}`, {
             method: "DELETE"
         }).then(
             response => response.json()

@@ -1,6 +1,6 @@
 import json
 import random
-from os.path import exists
+from os.path import exists, join, realpath, dirname
 
 from flask import Flask, jsonify, request, Response, render_template
 from flask_cors import CORS, cross_origin
@@ -10,7 +10,8 @@ from init_db import init_db
 app = Flask(__name__)
 cors = CORS(app)
 
-FILE_PATH = "q&a.json"  # Data Location
+# FILE_PATH = join(realpath(dirname(__file__)), "static/data", "q&a.json")  # Data Location
+FILE_PATH = "static/data/q&a.json"
 CATEGORIES = ("chin", "eng", "math")
 
 # Question Bank (Synchronous with q&a.json)
@@ -162,5 +163,4 @@ if __name__ == '__main__':
         init_db(FILE_PATH)
     load_questions()
     app.config['JSON_AS_ASCII'] = False
-    app.config['CORS_HEADERS'] = 'Content-Type'
     app.run()
