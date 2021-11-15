@@ -25,7 +25,40 @@
             </form>
         </section>
         <section class="formContainer" id="delQuestion">
-
+            <form id="deleteQuestionForm">
+                <label class="formTitle" for="deleteQuestionForm">Delete Question</label>
+                <label class="formFieldName" for="questionId">Question ID: (Required)</label>
+                <input type="text" id="questionId" required>
+                <input class="formSubmitButton" id="deleteQuestionFormSubmit" type="submit">
+                <p class="formStatus" id="deleteQuestionFormStatus"></p>
+            </form>
+        </section>
+        <section class="externalSectionContainer" id="allQuestions">
+            <label class="formTitle" for="allQuestions">All Results</label>
+            <label for="displayQuestionCategory" id="displayQuestionCategoryLabel">Filter: </label>
+            <select id="displayQuestionCategory">
+                {% for cat, cat_name in display_cats %}
+                    <option value="{{ cat }}">{{ cat_name }}</option>
+                {% endfor %}
+            </select>
+            <button id="refreshButton">Refresh</button>
+            <br>
+            <iframe id="allQuestionsFrame"></iframe>
+        </section>
+        <section class="externalSectionContainer" id="endpoints">
+            <label class="formTitle" for="endpoints">REST endpoints (Data retrieval)</label>
+            <table>
+                <tr>
+                    <td class="colHeader">Description</td>
+                    <td class="colHeader">Path</td>
+                </tr>
+                {% for label, path in endpoints %}
+                    <tr>
+                        <td>{{ label }}</td>
+                        <td>{{ path }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
         </section>
     </div>
 {% endblock content %}

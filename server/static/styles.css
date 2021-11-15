@@ -6,9 +6,6 @@ body {
 form {
     display: flex;
     flex-direction: column;
-    border: 1px solid lightgray;
-    border-radius: 5px;
-    padding: 1em;
 }
 
 .formFieldName, form > input, form > select {
@@ -28,4 +25,36 @@ form {
 .formTitle {
     font-size: x-large;
     margin-bottom: 1em;
+}
+
+.formContainer, .externalSectionContainer {
+    margin-bottom: 0.7em;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 1em;
+}
+
+#allQuestionsFrame {
+    width: 100%;
+    height: 30em;
+    margin-top: 1em;
+}
+
+#displayQuestionCategoryLabel {
+    margin-left: 0.8em;
+}
+
+table {
+    border: 1px solid lightgray;
+    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+    width: 100%;
+}
+
+td {
+    border: 1px solid lightgray;
+}
+
+.colHeader {
+    font-weight: bold;
 }

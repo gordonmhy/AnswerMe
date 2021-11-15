@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    let allQuestionsFrame = document.querySelector("#allQuestionsFrame");
+    allQuestionsFrame.src = `http://${window.location.hostname}:5000/all`;
+    const updateFrame = () => {
+        let cat = displayQuestionCategory.options[displayQuestionCategory.selectedIndex].value;
+        allQuestionsFrame.src = `http://${window.location.hostname}:5000/all${cat !== "all" ? "/" + cat : ""}`;
+    }
+    let displayQuestionCategory = document.querySelector("#displayQuestionCategory");
+    displayQuestionCategory.addEventListener("change", updateFrame);
+    let refreshButton = document.querySelector("#refreshButton");
+    refreshButton.addEventListener("click", () => {
+        updateFrame();
+    })
     let addQuestionFormSubmitButton = document.querySelector("#addQuestionFormSubmit");
     addQuestionFormSubmitButton.addEventListener("click", (event) => {
         event.preventDefault();
@@ -11,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let addQuestionFormStatus = document.querySelector("#addQuestionFormStatus");
         addQuestionFormStatus.innerHTML = "Loading, please wait...";
         addQuestionFormStatus.style.display = "block";
-        addQuestionFormStatus.style.color = "black";
+        addQuestionFormStatus.style.color = "gray";
         let data = {
             'cat': category.options[category.selectedIndex].value,
             'ql1': questionLine1.value,
@@ -24,15 +36,40 @@ document.addEventListener('DOMContentLoaded', () => {
         if (questionAnswer2.value !== '') {
             data.ans2 = questionAnswer2.value
         }
-        fetch(`http://${window.location.hostname}/add`, {
-            method: "POST",
+        fetch(`http://${window.location.hostname}:5000/add`, {
             body: JSON.stringify(data),
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
         }).then(response => response.json()).then((response) => {
-            addQuestionFormStatus.innerHTML = `Result: <br>${JSON.stringify(response)}`;
+            addQuestionFormStatus.innerHTML = `Result: <br>${JSON.stringify(response, null, 4)}`;
             addQuestionFormStatus.style.color = response.success === undefined ? "darkred" : "darkgreen";
+            questionLine1.value = "";
+            questionLine2.value = "";
+            questionNote.value = "";
+            questionAnswer1.value = "";
+            questionAnswer2.value = "";
+            updateFrame();
+        });
+    });
+    let deleteQuestionFormSubmitButton = document.querySelector("#deleteQuestionFormSubmit");
+    deleteQuestionFormSubmitButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        let questionId = document.querySelector("#questionId");
+        let deleteQuestionFormStatus = document.querySelector("#deleteQuestionFormStatus");
+        deleteQuestionFormStatus.innerHTML = "Loading, please wait...";
+        deleteQuestionFormStatus.style.display = "block";
+        deleteQuestionFormStatus.style.color = "gray";
+        fetch(`http://${window.location.hostname}:5000/del/${questionId.value}`, {
+            method: "DELETE"
+        }).then(
+            response => response.json()
+        ).then(response => {
+            deleteQuestionFormStatus.innerHTML = `Result: <br>${JSON.stringify(response, null, 4)}`;
+            deleteQuestionFormStatus.style.color = response.success === undefined ? "darkred" : "darkgreen";
+            questionId.value = "";
+            updateFrame();
         })
     })
 })

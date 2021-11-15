@@ -37,8 +37,8 @@ def get_all_questions(cat=None):
     return question_bank[cat_key_mapper.get(cat, 0)]
 
 
-def count_questions():
-    return sum([len(question_bank[i]) for i in range(len(question_bank))])
+def max_qid():
+    return max([int(item["qid"]) for cat in question_bank for item in cat])
 
 
 def feed_random_questions(cat=None, prev_id=None):
@@ -57,14 +57,14 @@ def get_question(qid, source):
 def add_question(cat, q, a, note):
     if cat not in CATEGORIES:
         return False
-    new_qid = str(count_questions() + 1)
-    new_dat = list(get_all_questions()) + [{
-        "cat": cat, "q": q, "a": a, "note": note, "qid": new_qid,
-    }]
+    new_question = {
+        "cat": cat, "q": q, "a": a, "note": note, "qid": str(max_qid() + 1),
+    }
+    new_dat = list(get_all_questions()) + [new_question]
     with open(FILE_PATH, 'w') as file:
         file.write(json.dumps(new_dat, ensure_ascii=False, indent=4))
     load_questions()
-    return new_qid
+    return new_question
 
 
 def del_question(qid):
@@ -77,13 +77,6 @@ def del_question(qid):
         file.write(json.dumps(all_questions, ensure_ascii=False, indent=4))
     load_questions()
     return to_delete["qid"]
-
-
-# Renders template for the main control panel
-@app.route('/')
-@cross_origin(origin='*')
-def main():
-    return render_template("main.html", cats=zip(CATEGORIES, ("Chinese", "English", "Mathematics")))
 
 
 #######################
@@ -111,18 +104,18 @@ def rest_random_question(cat=None):
 @app.route('/add', methods=['POST'])
 @cross_origin(origin='*')
 def rest_add_question():
-    cat = request.form.get("cat")
-    ql1 = request.form.get("ql1")
-    ql2 = request.form.get("ql2")
-    note = request.form.get("note")
-    ans1 = request.form.get("ans1")
-    ans2 = request.form.get("ans2")
+    cat = request.json.get("cat")
+    ql1 = request.json.get("ql1")
+    ql2 = request.json.get("ql2")
+    note = request.json.get("note")
+    ans1 = request.json.get("ans1")
+    ans2 = request.json.get("ans2")
     if cat is None or ql1 is None or ans1 is None:
         return Response('{"error":"Missing mandatory arguments."}', status=400, mimetype='application/json')
     result = add_question(cat, [ql1] + ([ql2] if ql2 else []), [ans1] + ([ans2] if ans2 else []), note)
     if result is False:
         return Response('{"error":"Invalid question category."}', status=200, mimetype='application/json')
-    return Response('{"success":"Added question with qid=' + result + '."}', status=201, mimetype='application/json')
+    return jsonify({'success': result}), 201
 
 
 @app.route('/del/<qid>', methods=['DELETE'])
@@ -131,7 +124,7 @@ def rest_delete_question(qid):
     result = del_question(qid)
     if result is False:
         return Response('{"error":"Invalid question ID."}', status=200, mimetype='application/json')
-    return Response('{"success":"Deleted question with qid=' + result + '"}', status=200)
+    return Response('{"success":"Deleted question with qid(' + result + ')"}', status=200)
 
 
 @app.route('/getq/<qid>')
@@ -143,10 +136,31 @@ def rest_question_by_id(qid):
     return jsonify(result), 200
 
 
+#######################
+
+# Renders template for the main control panel
+@app.route('/')
+@cross_origin(origin='*')
+def main():
+    # Only showing endpoints for question retrieval
+    endpoints = [
+        ("Retrieving all questions (any category)", "/all"),
+        ("Retrieving all questions (a particular category, either chin, eng or math)", "/all/<cat>"),
+        ("Obtaining a random question (any category) (GET argument: prev_id => Previous question ID)", "/ques"),
+        ("Obtaining a random question (a particular category) (GET argument: prev_id => Previous question ID)",
+         "/ques/<cat>"),
+        ("Obtaining a question by question ID", "/getq/<qid>"),
+    ]
+    return render_template("main.html", cats=zip(CATEGORIES, ("Chinese", "English", "Mathematics")),
+                           display_cats=zip(["all"] + list(CATEGORIES), ("All", "Chinese", "English", "Mathematics")),
+                           endpoints=endpoints)
+    # cats and display_cats are replicates of one another (jinja2 has bugs in reusing variables)
+
+
 if __name__ == '__main__':
     if exists(FILE_PATH) is False:
         init_db(FILE_PATH)
     load_questions()
     app.config['JSON_AS_ASCII'] = False
     app.config['CORS_HEADERS'] = 'Content-Type'
-    app.run(debug=True)
+    app.run()
