@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename="styles.css") }}" />
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    <title>AnswerMe</title>
+</head>
+<body>
+    <h2 id="header">AnswerMe - Question Bank (Controls)</h2>
+    {% block content %}{% endblock content %}
+</body>
+</html>

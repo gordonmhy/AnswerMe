@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+    <div>
+        <section class="formContainer" id="addQuestion">
+            <form id="addQuestionForm">
+                <label class="formTitle" for="addQuestionForm">Add Question Form</label>
+                <label for="questionCategory">Category: </label>
+                <select id="questionCategory">
+                    {% for cat, cat_name in cats %}
+                        <option value="{{ cat }}">{{ cat_name }}</option>
+                    {% endfor %}
+                </select>
+                <label class="formFieldName" for="questionLine1">Question Line 1: (Required)</label>
+                <input type="text" id="questionLine1" required>
+                <label class="formFieldName" for="questionLine2">Question Line 2: </label>
+                <input type="text" id="questionLine2">
+                <label class="formFieldName" for="questionNote">Note: (Required)</label>
+                <input type="text" id="questionNote" required>
+                <label class="formFieldName" for="questionAnswer1">Acceptable Ans 1: (Required)</label>
+                <input type="text" id="questionAnswer1" required>
+                <label class="formFieldName" for="questionAnswer2">Acceptable Ans 2: </label>
+                <input type="text" id="questionAnswer2">
+                <input class="formSubmitButton" id="addQuestionFormSubmit" type="submit">
+                <p class="formStatus" id="addQuestionFormStatus"></p>
+            </form>
+        </section>
+        <section class="formContainer" id="delQuestion">
+
+        </section>
+    </div>
+{% endblock content %}

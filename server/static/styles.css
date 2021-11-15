@@ -1,0 +1,31 @@
+body {
+    font-family: sans-serif;
+    padding-inline: 0.8em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 1em;
+}
+
+.formFieldName, form > input, form > select {
+    margin-top: 0.7em;
+}
+
+.formStatus {
+    display: none;
+    margin-top: 0.7em;
+}
+
+.formSubmitButton {
+    margin-top: 1.1em;
+    font-size: medium;
+}
+
+.formTitle {
+    font-size: x-large;
+    margin-bottom: 1em;
+}
