@@ -12,10 +12,10 @@ cors = CORS(app)
 
 # FILE_PATH = join(realpath(dirname(__file__)), "static/data", "q&a.json")  # Data Location
 FILE_PATH = "static/data/q&a.json"
-CATEGORIES = ("chin", "eng", "math")
+CATEGORIES = ("chin", "eng", "math", "cs")
 
 # Question Bank (Synchronous with q&a.json)
-question_bank = [], [], []  # chin, eng, math
+question_bank = [], [], [], []  # chin, eng, math, cs
 cat_key_mapper = dict(zip(CATEGORIES, range(len(question_bank))))
 
 
@@ -32,7 +32,7 @@ def load_questions():
 def get_all_questions(cat=None):
     if cat is None:
         result = []
-        for i in range(3):
+        for i in range(len(question_bank)):
             result += question_bank[i]
         return result
     return question_bank[cat_key_mapper.get(cat, 0)]
@@ -92,7 +92,7 @@ def rest_all_questions(cat=None):
 
 
 @app.route('/ques')  # this yields any random question
-@app.route('/ques/<cat>')  # cat can be one of {"chin", "eng", "math"}
+@app.route('/ques/<cat>')  # cat can be one of {"chin", "eng", "math", "cs"}
 @cross_origin(origin='*')
 def rest_random_question(cat=None):
     prev_id = request.args.get("prev_id")
@@ -152,8 +152,9 @@ def main():
          "/ques/<cat>"),
         ("Obtaining a question by question ID", "/getq/<qid>"),
     ]
-    return render_template("main.html", cats=zip(CATEGORIES, ("Chinese", "English", "Mathematics")),
-                           display_cats=zip(["all"] + list(CATEGORIES), ("All", "Chinese", "English", "Mathematics")),
+    return render_template("main.html", cats=zip(CATEGORIES, ("Chinese", "English", "Mathematics", "Computer Science")),
+                           display_cats=zip(["all"] + list(CATEGORIES),
+                                            ("All", "Chinese", "English", "Mathematics", "Computer Science")),
                            endpoints=endpoints)
     # cats and display_cats are replicates of one another (jinja2 has bugs in reusing variables)
 
