@@ -1,0 +1,33 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Question Bank">
+
+        <SwitchPreferenceCompat
+            android:hapticFeedbackEnabled="true"
+            app:defaultValue="true"
+            app:key="chin"
+            app:title="Chinese" />
+
+        <SwitchPreferenceCompat
+            android:hapticFeedbackEnabled="true"
+            app:defaultValue="true"
+            app:key="eng"
+            app:title="English" />
+
+        <SwitchPreferenceCompat
+            android:hapticFeedbackEnabled="true"
+            app:defaultValue="true"
+            app:key="math"
+            app:title="Mathematics" />
+
+        <SwitchPreferenceCompat
+            android:hapticFeedbackEnabled="true"
+            app:defaultValue="true"
+            app:key="cs"
+            app:title="Computer Science" />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
