@@ -122,6 +122,9 @@ public class RingActivity extends AppCompatActivity {
             questionLine2.setText("You can now dismiss the alarm.");
             questionNote.setText("");
             instructionText.setText("Please click the dismiss button.");
+
+            // TODO: Add reward time calculation logic.
+
         } else {
             new AlertDialog.Builder(this)
                     .setMessage("Please try again.")

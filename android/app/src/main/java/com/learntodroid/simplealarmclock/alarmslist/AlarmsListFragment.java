@@ -2,11 +2,9 @@ package com.learntodroid.simplealarmclock.alarmslist;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -61,20 +59,14 @@ public class AlarmsListFragment extends Fragment implements OnToggleAlarmListene
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(alarmsRecyclerView);
 
         addAlarm = view.findViewById(R.id.add_alarm_icon);
-        addAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.action_alarmsListFragment_to_createAlarmFragment);
-            }
-        });
+        addAlarm.setOnClickListener((v) ->
+                Navigation.findNavController(v).navigate(R.id.action_alarmsListFragment_to_createAlarmFragment)
+        );
 
         setting = view.findViewById(R.id.setting_icon);
-        setting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent myintent = new Intent(view.getContext(), SettingsActivity.class);
-                startActivity(myintent);
-            }
+        setting.setOnClickListener((v) -> {
+            Intent myintent = new Intent(view.getContext(), SettingsActivity.class);
+            startActivity(myintent);
         });
 
         return view;
@@ -93,7 +85,7 @@ public class AlarmsListFragment extends Fragment implements OnToggleAlarmListene
         }
     }
 
-    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT|ItemTouchHelper.LEFT) {
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT | ItemTouchHelper.LEFT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
@@ -105,6 +97,8 @@ public class AlarmsListFragment extends Fragment implements OnToggleAlarmListene
             assert alarm != null;
             alarm.cancelAlarm(requireContext());
             alarmsListViewModel.delete(alarm);
+            String toastText = String.format("Alarm deleted.");
+            Toast.makeText(getContext(), toastText, Toast.LENGTH_SHORT).show();
         }
     };
 }
