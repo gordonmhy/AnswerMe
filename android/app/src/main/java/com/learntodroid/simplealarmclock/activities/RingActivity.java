@@ -1,7 +1,6 @@
 package com.learntodroid.simplealarmclock.activities;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,7 @@ import androidx.preference.PreferenceManager;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.learntodroid.simplealarmclock.R;
+import com.learntodroid.simplealarmclock.reward.RewardUtils;
 import com.learntodroid.simplealarmclock.service.AlarmService;
 
 import org.json.JSONArray;
@@ -50,12 +51,18 @@ public class RingActivity extends AppCompatActivity {
     Button dismiss;
     @BindView(R.id.instructionText)
     TextView instructionText;
+    @BindView(R.id.changeQuestionButton)
+    TextView changeQuestionButton;
 
     final String[] validCategories = {"chin", "eng", "math", "cs"};
 
     public ArrayList<String> questionLines = new ArrayList<>();
     public String note = "";
     public ArrayList<String> answers = new ArrayList<>();
+
+    private RewardUtils rewardUtils;
+
+    private Long launchTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,11 +71,15 @@ public class RingActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        launchTime = System.currentTimeMillis();
+        rewardUtils = new RewardUtils(getApplicationContext());
+
         questionLine1.setText("Retrieving Question...");
         questionLine2.setText("");
         questionNote.setText("Loading...");
         dismiss.setEnabled(false);  // The dismiss button won't be enabled until a correct answer is received.
         checkAnswerButton.setEnabled(false);  // The check answer button won't be enabled until the question is loaded.
+        changeQuestionButton.setEnabled(false);
 
         dismiss.setOnClickListener((event) -> {
             Intent intentService = new Intent(getApplicationContext(), AlarmService.class);
@@ -94,9 +105,38 @@ public class RingActivity extends AppCompatActivity {
         if (!obtainData(cat)) {
             questionLine1.setText("Unable to retrieve question.");
         }
+
+        changeQuestionButton.setOnClickListener((view -> {
+            new AlertDialog.Builder(this)
+                    .setMessage("You will be using a chance to change this question to another one.")
+                    .setTitle("Are you sure?")
+                    .setCancelable(true)
+                    .setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
+                            }
+                    )
+                    .setPositiveButton("Sure", (dialog, whichButton) -> {
+                        rewardUtils.useChance();
+                        changeQuestionButton.setEnabled(false);
+                        int newRandInt = new Random().nextInt(activeCategories.size() > 0 ? activeCategories.size() : validCategories.length);
+                        String newCat = activeCategories.size() > 0 ? activeCategories.get(newRandInt) : validCategories[newRandInt];
+                        if (!obtainData(newCat)) {
+                            questionLine1.setText("Unable to retrieve question.");
+                        } else {
+                            launchTime = System.currentTimeMillis();
+                        }
+                        Toast toast = Toast.makeText(getApplicationContext(), "Changed question. You are left with " + rewardUtils.getChances() + " chances.", Toast.LENGTH_LONG);
+                        toast.show();
+                    })
+                    .show();
+        }));
+
+        // Testing purpose
+        // rewardUtils.incrementPoint(100);
     }
 
     public void parseJson(String JSONString) {
+        questionLines.clear();
+        answers.clear();
         try {
             JSONObject rootJSONObj = new JSONObject(JSONString);
             JSONArray qL = rootJSONObj.optJSONArray("q");
@@ -118,22 +158,26 @@ public class RingActivity extends AppCompatActivity {
         if (answers.contains(answerField.getText().toString())) {
             dismiss.setEnabled(true);
             checkAnswerButton.setEnabled(false);
+            changeQuestionButton.setEnabled(false);
             questionLine1.setText("Answer correct!");
             questionLine2.setText("You can now dismiss the alarm.");
             questionNote.setText("");
             instructionText.setText("Please click the dismiss button.");
 
-            // TODO: Add reward time calculation logic.
+            Long currentTime = System.currentTimeMillis();
+            int timeLimit = 30;  // in seconds
 
+            if (currentTime - launchTime <= timeLimit * 1000) {  // within half a minute after viewing the question
+                rewardUtils.incrementPoint();
+                Toast toast = Toast.makeText(getApplicationContext(), "You earned 1 point for answering within " + timeLimit + " seconds!", Toast.LENGTH_LONG);
+                toast.show();
+            }
         } else {
             new AlertDialog.Builder(this)
                     .setMessage("Please try again.")
                     .setTitle("Wrong Answer")
                     .setCancelable(true)
-                    .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                }
+                    .setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
                             }
                     )
                     .show();
@@ -142,11 +186,15 @@ public class RingActivity extends AppCompatActivity {
 
     public void updateDisplay() {
         questionLine1.setText(questionLines.get(0));
+        questionLine2.setText("");
         if (questionLines.size() > 1) {
             questionLine2.setText(questionLines.get(1));
         }
         questionNote.setText(note);
         checkAnswerButton.setEnabled(true);
+        if (rewardUtils.getChances() > 0) {
+            changeQuestionButton.setEnabled(true);
+        }
     }
 
     public boolean obtainData(final String category) {
