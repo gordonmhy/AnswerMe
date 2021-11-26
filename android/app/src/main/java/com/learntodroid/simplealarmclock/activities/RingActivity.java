@@ -84,7 +84,7 @@ public class RingActivity extends AppCompatActivity {
 
         dismiss.setOnClickListener((event) -> {
             Intent intentService = new Intent(getApplicationContext(), AlarmService.class);
-            getApplicationCqontext().stopService(intentService);
+            getApplicationContext().stopService(intentService);
             finish();  // This ends the activity  (Closes this window)
         });
 
