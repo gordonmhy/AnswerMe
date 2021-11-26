@@ -15,6 +15,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.learntodroid.simplealarmclock.R;
 import com.learntodroid.simplealarmclock.activities.RingActivity;
+import com.learntodroid.simplealarmclock.reward.RewardUtils;
 
 import static com.learntodroid.simplealarmclock.application.App.CHANNEL_ID;
 import static com.learntodroid.simplealarmclock.broadcastreceiver.AlarmBroadcastReceiver.TITLE;
@@ -39,11 +40,11 @@ public class AlarmService extends Service {
         Intent notificationIntent = new Intent(this, RingActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        String alarmTitle = String.format("%s Alarm", intent.getStringExtra(TITLE));
+        String alarmTitle = intent.getStringExtra(TITLE) + " Alarm";
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(alarmTitle)
-                .setContentText("Ring Ring .. Ring Ring")
+                .setContentText("Click to answer me!")
                 .setSmallIcon(R.drawable.ic_alarm_black_24dp)
                 .setContentIntent(pendingIntent)
                 .build();
@@ -52,6 +53,8 @@ public class AlarmService extends Service {
 
         long[] pattern = { 0, 100, 1000 };
         vibrator.vibrate(pattern, 0);
+
+        RewardUtils.launchTime = System.currentTimeMillis();
 
         startForeground(1, notification);
 

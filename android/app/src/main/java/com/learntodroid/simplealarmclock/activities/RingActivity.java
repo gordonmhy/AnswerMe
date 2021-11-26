@@ -71,7 +71,7 @@ public class RingActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        launchTime = System.currentTimeMillis();
+        launchTime = RewardUtils.launchTime == null ? System.currentTimeMillis() : RewardUtils.launchTime;
         rewardUtils = new RewardUtils(getApplicationContext());
 
         questionLine1.setText("Retrieving Question...");
@@ -121,9 +121,9 @@ public class RingActivity extends AppCompatActivity {
                         String newCat = activeCategories.size() > 0 ? activeCategories.get(newRandInt) : validCategories[newRandInt];
                         if (!obtainData(newCat)) {
                             questionLine1.setText("Unable to retrieve question.");
-                        } else {
-                            launchTime = System.currentTimeMillis();
-                        }
+                        } /*else {
+                            launchTime = System.currentTimeMillis();  // Reset timer upon question change
+                        }*/
                         Toast toast = Toast.makeText(getApplicationContext(), "Changed question. You are left with " + rewardUtils.getChances() + " chances.", Toast.LENGTH_LONG);
                         toast.show();
                     })

@@ -10,6 +10,8 @@ public class RewardUtils {
     private final SharedPreferences sharedPreferences;
     private final SharedPreferences.Editor editor;
 
+    public static Long launchTime;
+
     public RewardUtils(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         editor = sharedPreferences.edit();
