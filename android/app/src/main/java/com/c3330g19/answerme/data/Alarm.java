@@ -140,16 +140,16 @@ public class Alarm {
         }
 
         if (!recurring) {
-            String toastText = String.format("One Time Alarm scheduled.");
-            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show();
+            // String toastText = String.format("One Time Alarm scheduled.");
+            // Toast.makeText(context, toastText, Toast.LENGTH_LONG).show();
             alarmManager.setExact(
                     AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(),
                     alarmPendingIntent
             );
         } else {
-            String toastText = String.format("Recurring Alarm scheduled.");
-            Toast.makeText(context, toastText, Toast.LENGTH_LONG).show();
+            // String toastText = String.format("Recurring Alarm scheduled.");
+            // Toast.makeText(context, toastText, Toast.LENGTH_LONG).show();
 
             final long RUN_DAILY = 24 * 60 * 60 * 1000;
             alarmManager.setRepeating(
