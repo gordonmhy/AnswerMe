@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,7 +84,7 @@ public class RingActivity extends AppCompatActivity {
 
         dismiss.setOnClickListener((event) -> {
             Intent intentService = new Intent(getApplicationContext(), AlarmService.class);
-            getApplicationContext().stopService(intentService);
+            getApplicationCqontext().stopService(intentService);
             finish();  // This ends the activity  (Closes this window)
         });
 
@@ -165,13 +166,15 @@ public class RingActivity extends AppCompatActivity {
             instructionText.setText("Please click the dismiss button.");
 
             Long currentTime = System.currentTimeMillis();
-            int timeLimit = 30;  // in seconds
+            int timeLimit = 60;  // in seconds
 
-            if (currentTime - launchTime <= timeLimit * 1000) {  // within half a minute after viewing the question
+            if (currentTime - launchTime <= timeLimit * 1000) {  // within a minute after viewing the question
                 rewardUtils.incrementPoint();
                 Toast toast = Toast.makeText(getApplicationContext(), "You earned 1 point for answering within " + timeLimit + " seconds!", Toast.LENGTH_LONG);
                 toast.show();
             }
+
+            answerField.setVisibility(View.INVISIBLE);
         } else {
             new AlertDialog.Builder(this)
                     .setMessage("Please try again.")
@@ -195,6 +198,7 @@ public class RingActivity extends AppCompatActivity {
         if (rewardUtils.getChances() > 0) {
             changeQuestionButton.setEnabled(true);
         }
+        answerField.setVisibility(View.VISIBLE);
     }
 
     public boolean obtainData(final String category) {
