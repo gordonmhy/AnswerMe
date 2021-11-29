@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.c3330g19.answerme.activities.RewardActivity;
 import com.c3330g19.answerme.activities.SettingsActivity;
 import com.c3330g19.answerme.data.Alarm;
 import com.c3330g19.answerme.R;
@@ -33,6 +34,7 @@ public class AlarmsListFragment extends Fragment implements OnToggleAlarmListene
     private RecyclerView alarmsRecyclerView;
     private ImageButton addAlarm;
     private ImageButton setting;
+    private ImageButton reward_icon;
 
 
     @Override
@@ -69,6 +71,12 @@ public class AlarmsListFragment extends Fragment implements OnToggleAlarmListene
         setting = view.findViewById(R.id.setting_icon);
         setting.setOnClickListener((v) -> {
             Intent myintent = new Intent(view.getContext(), SettingsActivity.class);
+            startActivity(myintent);
+        });
+
+        reward_icon = view.findViewById(R.id.reward_icon);
+        reward_icon.setOnClickListener((v) -> {
+            Intent myintent = new Intent(view.getContext(), RewardActivity.class);
             startActivity(myintent);
         });
 

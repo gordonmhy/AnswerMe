@@ -109,10 +109,10 @@ public class RingActivity extends AppCompatActivity {
 
         changeQuestionButton.setOnClickListener((view -> {
             new AlertDialog.Builder(this)
-                    .setMessage("You will be using a chance to change this question to another one.")
+                    .setMessage("You will be using a Chance to change this question to another one.")
                     .setTitle("Are you sure?")
                     .setCancelable(true)
-                    .setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
+                    .setNegativeButton("No", (dialog, whichButton) -> {
                             }
                     )
                     .setPositiveButton("Sure", (dialog, whichButton) -> {

@@ -176,27 +176,27 @@ public class Alarm {
             return null;
         }
 
-        String days = "";
+        String days = "Every ";
         if (monday) {
-            days += "Mo ";
+            days += "Mon ";
         }
         if (tuesday) {
-            days += "Tu ";
+            days += "Tue ";
         }
         if (wednesday) {
-            days += "We ";
+            days += "Wed ";
         }
         if (thursday) {
-            days += "Th ";
+            days += "Thu ";
         }
         if (friday) {
-            days += "Fr ";
+            days += "Fri ";
         }
         if (saturday) {
-            days += "Sa ";
+            days += "Sat ";
         }
         if (sunday) {
-            days += "Su ";
+            days += "Sun ";
         }
 
         return days;
